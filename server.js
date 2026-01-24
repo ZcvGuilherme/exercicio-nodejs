@@ -162,3 +162,15 @@ app.post('/emprestimos/excluir/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
+
+app.get('/api/amigos', async (req, res) => {
+  try {
+    const amigos = await Amigo.findAll({
+      order: [['id', 'ASC']]
+    });
+
+    res.json(amigos);
+  } catch (error) {
+    res.status(500).json({ erro: 'Erro ao buscar amigos' });
+  }
+});
