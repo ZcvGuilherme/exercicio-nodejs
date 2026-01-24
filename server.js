@@ -174,3 +174,28 @@ app.get('/api/amigos', async (req, res) => {
     res.status(500).json({ erro: 'Erro ao buscar amigos' });
   }
 });
+
+app.get('/api/emprestimos', async (req, res) => {
+  try {
+    const emprestimos = await Emprestimo.findAll({
+      order: [['id', 'ASC']]
+    });
+
+    res.json(emprestimos);
+  } catch (error) {
+    res.status(500).json({ erro: 'Erro ao buscar emprestimos' });
+  }
+});
+
+
+app.get('/api/jogos', async (req, res) => {
+  try {
+    const jogos = await Jogo.findAll({
+      order: [['id', 'ASC']]
+    });
+
+    res.json(jogos);
+  } catch (error) {
+    res.status(500).json({ erro: 'Erro ao buscar jogos' });
+  }
+});

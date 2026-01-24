@@ -23,7 +23,8 @@ pegou</th><th>Início</th><th>Fim</th><th>Ações</th></tr></thead>
  <td><%= e.dataFim ? e.dataFim : 'em aberto' %></td>
  <td>
  <form action="/emprestimos/excluir/<%= e.id %>" method="POST" style="display:inline;">
-    <button type="submit">Excluir</button>
+      <button type="submit">Excluir</button>
+      <a href="/api/emprestimos" target="_blank">Ver JSON</a>
  </form>
  </td>
  </tr>
