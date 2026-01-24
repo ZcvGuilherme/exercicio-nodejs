@@ -8,7 +8,7 @@
 </head>
 <body>
  <h1>Empréstimos / Trocas</h1>
- <p><a href="/emprestimos/novo">Registrar empréstimo</a> | <a href="/jogos">Jogos</a> | <a
+ <p><a href="/emprestimos/novo">Registrar empréstimo</a> | <a href="/jogos">Jogos</a> | <a href="/api/emprestimos">Ver JSON</a> | <a
 href="/amigos">Amigos</a></p>
  <table>
  <thead><tr><th>ID</th><th>Jogo</th><th>Quem
@@ -24,7 +24,7 @@ pegou</th><th>Início</th><th>Fim</th><th>Ações</th></tr></thead>
  <td>
  <form action="/emprestimos/excluir/<%= e.id %>" method="POST" style="display:inline;">
       <button type="submit">Excluir</button>
-      <a href="/api/emprestimos" target="_blank">Ver JSON</a>
+      
  </form>
  </td>
  </tr>
