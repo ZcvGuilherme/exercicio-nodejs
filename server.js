@@ -1,4 +1,10 @@
 // Arquivo: server.js (completo)
+
+//Imports para gerar PDF
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+
 const express = require('express');
 const path = require('path');
 const { Amigo, Jogo, Emprestimo } = require('./models');
@@ -157,6 +163,47 @@ app.post('/emprestimos/excluir/:id', async (req, res) => {
   res.redirect('/emprestimos');
 });
 
+app.get('/pdf/emprestimos', async (req, res) => {
+  try {
+    const emprestimos = await Emprestimo.findAll({
+      include: [
+        { model: Jogo, as: 'jogo' },
+        { model: Amigo, as: 'amigo' }
+      ],
+      order: [['id', 'ASC']]
+    });
+
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename=emprestimos.pdf');
+
+    doc.pipe(res);
+
+    // ===== TÍTULO =====
+    doc
+      .fontSize(20)
+      .text('Relatório de Empréstimos de Jogos', { align: 'center' });
+
+    doc.moveDown(2);
+
+    // ===== CONTEÚDO =====
+    emprestimos.forEach((e) => {
+      doc
+        .fontSize(12)
+        .text(`Amigo: ${e.amigo.nome}`)
+        .text(`Jogo: ${e.jogo.titulo}`)
+        .text(`Data início: ${e.dataInicio}`)
+        .text(`Data fim: ${e.dataFim ?? 'Em andamento'}`)
+        .moveDown();
+    });
+
+    doc.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erro ao gerar PDF');
+  }
+});
 
 // =====================
 app.listen(PORT, () => {
