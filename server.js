@@ -173,6 +173,7 @@ app.get('/pdf/emprestimos', async (req, res) => {
       order: [['id', 'ASC']]
     });
 
+    // Criação do documento PDF
     const doc = new PDFDocument({ size: 'A4', margin: 50 });
 
     res.setHeader('Content-Type', 'application/pdf');
@@ -191,6 +192,7 @@ app.get('/pdf/emprestimos', async (req, res) => {
     emprestimos.forEach((e) => {
       doc
         .fontSize(12)
+        .text(`ID Empréstimo: ${e.id}`)
         .text(`Amigo: ${e.amigo.nome}`)
         .text(`Jogo: ${e.jogo.titulo}`)
         .text(`Data início: ${e.dataInicio}`)
