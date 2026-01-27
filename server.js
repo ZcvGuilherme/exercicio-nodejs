@@ -1,4 +1,10 @@
 // Arquivo: server.js (completo)
+
+//Imports para gerar PDF
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+
 const express = require('express');
 const path = require('path');
 const { Amigo, Jogo, Emprestimo } = require('./models');
@@ -157,6 +163,72 @@ app.post('/emprestimos/excluir/:id', async (req, res) => {
   res.redirect('/emprestimos');
 });
 
+app.get('/pdf/emprestimos', async (req, res) => {
+  try {
+    const emprestimos = await Emprestimo.findAll({
+      include: [
+        { model: Jogo, as: 'jogo' },
+        { model: Amigo, as: 'amigo' }
+      ],
+      order: [['id', 'ASC']]
+    });
+
+    // Criação do documento PDF
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename=emprestimos.pdf');
+
+    doc.pipe(res);
+
+    // ===== TÍTULO =====
+    doc
+      .fontSize(20)
+      .text('Relatório de Empréstimos de Jogos', { align: 'center' });
+
+    doc.moveDown(2);
+
+    // ===== TABELA DE EMPRÉSTIMOS =====
+let y = 150;
+
+// Cabeçalho
+doc.fontSize(12).text('ID', 50, y);
+doc.text('Amigo', 100, y);
+doc.text('Quem Pegou o Jogo', 220, y);
+doc.text('Data Início', 360, y);
+doc.text('Data Fim', 460, y);
+
+// Linha do cabeçalho
+doc.moveTo(50, y + 15)
+   .lineTo(550, y + 15)
+   .stroke();
+
+// Dados
+y += 25;
+
+emprestimos.forEach((e) => {
+  doc.text(e.id.toString(), 50, y);
+  doc.text(e.amigo.nome, 100, y);
+  doc.text(e.jogo.titulo, 220, y);
+  doc.text(e.dataInicio, 360, y);
+  doc.text(e.dataFim ?? 'Em andamento', 460, y);
+
+  y += 20;
+
+  // Quebra de página automática
+  if (y > 750) {
+    doc.addPage();
+    y = 50;
+  }
+});
+
+
+    doc.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erro ao gerar PDF');
+  }
+});
 
 // =====================
 app.listen(PORT, () => {

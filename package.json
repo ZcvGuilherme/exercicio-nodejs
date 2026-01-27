@@ -2,6 +2,7 @@
   "name": "prova",
   "version": "1.0.0",
   "description": "",
+  "types": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +14,7 @@
   "dependencies": {
     "ejs": "^4.0.1",
     "express": "^5.2.1",
+    "pdfkit": "^0.17.2",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"
   },
