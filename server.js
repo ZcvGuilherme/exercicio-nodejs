@@ -11,7 +11,9 @@ const { Amigo, Jogo, Emprestimo } = require('./models');
 
 const app = express();
 const PORT = 3000;
+const cors = require('cors');
 
+app.use(cors());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -231,7 +233,7 @@ emprestimos.forEach((e) => {
 });
 
 // =====================
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
   console.log(`http://localhost:${PORT}`);
 });
 
