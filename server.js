@@ -188,17 +188,40 @@ app.get('/pdf/emprestimos', async (req, res) => {
 
     doc.moveDown(2);
 
-    // ===== CONTEÚDO =====
-    emprestimos.forEach((e) => {
-      doc
-        .fontSize(12)
-        .text(`ID Empréstimo: ${e.id}`)
-        .text(`Amigo: ${e.amigo.nome}`)
-        .text(`Jogo: ${e.jogo.titulo}`)
-        .text(`Data início: ${e.dataInicio}`)
-        .text(`Data fim: ${e.dataFim ?? 'Em andamento'}`)
-        .moveDown();
-    });
+    // ===== TABELA DE EMPRÉSTIMOS =====
+let y = 150;
+
+// Cabeçalho
+doc.fontSize(12).text('ID', 50, y);
+doc.text('Amigo', 100, y);
+doc.text('Quem Pegou o Jogo', 220, y);
+doc.text('Data Início', 360, y);
+doc.text('Data Fim', 460, y);
+
+// Linha do cabeçalho
+doc.moveTo(50, y + 15)
+   .lineTo(550, y + 15)
+   .stroke();
+
+// Dados
+y += 25;
+
+emprestimos.forEach((e) => {
+  doc.text(e.id.toString(), 50, y);
+  doc.text(e.amigo.nome, 100, y);
+  doc.text(e.jogo.titulo, 220, y);
+  doc.text(e.dataInicio, 360, y);
+  doc.text(e.dataFim ?? 'Em andamento', 460, y);
+
+  y += 20;
+
+  // Quebra de página automática
+  if (y > 750) {
+    doc.addPage();
+    y = 50;
+  }
+});
+
 
     doc.end();
   } catch (error) {
