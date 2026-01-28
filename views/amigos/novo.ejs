@@ -1,17 +1,49 @@
-<!-- Arquivo: views/amigos/novo.ejs -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
- <meta charset="UTF-8" />
- <title>Novo Amigo</title>
- <link rel="stylesheet" href="/css/styles.css" />
+    <meta charset="UTF-8" />
+    <title>Novo Amigo</title>
+
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
+
 <body>
- <h1>Novo Amigo</h1>
- <form action="/amigos/novo" method="POST">
- <p><label>Nome:</label><br /><input name="nome" required /></p>
- <p><label>Email:</label><br /><input name="email" required /></p>
- <p><button type="submit">Salvar</button> <a href="/amigos">Cancelar</a></p>
- </form>
+
+    <h1>#Novo Amigo</h1>
+
+    <form action="/amigos/novo" method="POST" class="form-container">
+
+        <p>
+            <label>Nome</label><br>
+            <input
+                type="text"
+                name="nome"
+                required
+            />
+        </p>
+
+        <p>
+            <label>Email</label><br>
+            <input
+                type="email"
+                name="email"
+                required
+            />
+        </p>
+
+        <p>
+            <button type="submit" class="btn_editar">
+                Salvar
+            </button>
+
+            <a href="/amigos">
+                <button type="button" class="btn_excluir">
+                    Cancelar
+                </button>
+            </a>
+        </p>
+
+    </form>
+
 </body>
 </html>
