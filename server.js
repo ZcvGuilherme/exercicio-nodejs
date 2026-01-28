@@ -67,6 +67,62 @@ app.post('/amigos/excluir/:id', async (req, res) => {
   res.redirect('/amigos');
 });
 
+app.get('/pdf/amigos', async (req, res) => {
+  try {
+    const amigos = await Amigo.findAll({ order: [['id', 'ASC']] });
+
+    // Criação do documento PDF
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename=amigos.pdf');
+
+    doc.pipe(res);
+
+    // ===== TÍTULO =====
+    doc
+      .fontSize(20)
+      .text('Relatório de Amigos', { align: 'center' });
+
+    doc.moveDown(2);
+
+    // ===== TABELA DE AMIGOS =====
+    let y = 150;
+
+    // Cabeçalho
+    doc.fontSize(12).text('ID', 50, y);
+    doc.text('Nome do Amigo', 100, y);
+    doc.text('Email', 300, y);
+
+    // Linha do cabeçalho
+    doc.moveTo(50, y + 15)
+       .lineTo(550, y + 15)
+       .stroke();
+
+    // Dados
+    y += 25;
+
+    amigos.forEach((amigo) => {
+      doc.text(amigo.id.toString(), 50, y);
+      doc.text(amigo.nome, 100, y);
+      doc.text(amigo.email, 300, y);
+
+      y += 20;
+
+      // Quebra de página automática
+      if (y > 750) {
+        doc.addPage();
+        y = 50;
+      }
+    });
+
+    doc.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erro ao gerar PDF');
+  }
+});
+
 
 // =====================
 // JOGOS
@@ -122,6 +178,67 @@ app.post('/jogos/editar/:id', async (req, res) => {
 app.post('/jogos/excluir/:id', async (req, res) => {
   await Jogo.destroy({ where: { id: req.params.id } });
   res.redirect('/jogos');
+});
+
+app.get('/pdf/jogos', async (req, res) => {
+  try {
+    const jogos = await Jogo.findAll({
+      include: [{ model: Amigo, as: 'dono' }],
+      order: [['id', 'ASC']]
+    });
+
+    // Criação do documento PDF
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename=jogos.pdf');
+
+    doc.pipe(res);
+
+    // ===== TÍTULO =====
+    doc
+      .fontSize(20)
+      .text('Relatório de Jogos', { align: 'center' });
+
+    doc.moveDown(2);
+
+    // ===== TABELA DE JOGOS =====
+    let y = 150;
+
+    // Cabeçalho
+    doc.fontSize(12).text('ID', 50, y);
+    doc.text('Título do Jogo', 100, y);
+    doc.text('Plataforma', 300, y);
+    doc.text('Dono do Jogo', 450, y);
+
+    // Linha do cabeçalho
+    doc.moveTo(50, y + 15)
+       .lineTo(550, y + 15)
+       .stroke();
+
+    // Dados
+    y += 25;
+
+    jogos.forEach((jogo) => {
+      doc.text(jogo.id.toString(), 50, y);
+      doc.text(jogo.titulo, 100, y);
+      doc.text(jogo.plataforma, 300, y);
+      doc.text(jogo.dono ? jogo.dono.nome : 'Sem dono', 450, y);
+
+      y += 20;
+
+      // Quebra de página automática
+      if (y > 750) {
+        doc.addPage();
+        y = 50;
+      }
+    });
+
+    doc.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erro ao gerar PDF');
+  }
 });
 
 
