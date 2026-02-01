@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Amigos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Lista de Amigos</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Criado em</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-amigos">
+            <tr>
+                <td colspan="4">Carregando...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        fetch('http://localhost:3000/api/amigos')
+            .then(response => response.json())
+            .then(amigos => {
+                const tbody = document.getElementById('tabela-amigos');
+                tbody.innerHTML = '';
+
+                amigos.forEach(amigo => {
+                    const tr = document.createElement('tr');
+
+                    const dataCriacao = new Date(amigo.createdAt)
+                        .toLocaleString('pt-BR');
+
+                    tr.innerHTML = `
+                        <td>${amigo.id}</td>
+                        <td>${amigo.nome}</td>
+                        <td>${amigo.email}</td>
+                        <td>${dataCriacao}</td>
+                    `;
+
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => {
+                document.getElementById('tabela-amigos').innerHTML = `
+                    <tr>
+                        <td colspan="4">Erro ao carregar os dados</td>
+                    </tr>
+                `;
+                console.error(err);
+            });
+    </script>
+
+</body>
+</html>
