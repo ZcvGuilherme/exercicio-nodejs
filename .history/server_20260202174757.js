@@ -311,6 +311,7 @@ app.get('/pdf/emprestimos', async (req, res) => {
 let y = 150;
 
 // Cabeçalho
+// Cabeçalho
 doc.fontSize(12).text('ID', 50, y);
 doc.text('Amigo', 90, y);
 doc.text('Quem Pegou o Jogo', 170, y);
@@ -329,12 +330,10 @@ y += 25;
 
 emprestimos.forEach((e) => {
   doc.text(e.id.toString(), 50, y);
-  doc.text(e.amigo.nome, 90, y);
-  doc.text(e.amigo.nome, 170, y);
-  doc.text(e.jogo.titulo, 320, y);
-  doc.text(e.dataInicio, 400, y);
-  doc.text(e.dataFim ?? 'Em andamento', 480, y);
-
+  doc.text(e.amigo.nome, 100, y);
+  doc.text(e.jogo.titulo, 220, y);
+  doc.text(e.dataInicio, 360, y);
+  doc.text(e.dataFim ?? 'Em andamento', 460, y);
 
   y += 20;
 
@@ -344,6 +343,8 @@ emprestimos.forEach((e) => {
     y = 50;
   }
 });
+
+
     doc.end();
   } catch (error) {
     console.error(error);
