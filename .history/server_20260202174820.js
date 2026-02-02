@@ -344,6 +344,8 @@ emprestimos.forEach((e) => {
     y = 50;
   }
 });
+
+
     doc.end();
   } catch (error) {
     console.error(error);
